@@ -20,6 +20,11 @@
     <!-- Custom styles for this template-->
     <link href="{{asset('assets/css/sb-admin-2.min.css')}}" rel="stylesheet">
     <link href="{{asset('assets/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+
    
 
 </head>
@@ -115,7 +120,18 @@
     <!-- Page level custom scripts -->
     <script src="{{asset('assets/js/demo/datatables-demo.js')}}"></script>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+ 
+
+    
+
+
+    
 
 
     <script>
@@ -126,6 +142,83 @@
                 $(this).closest('li.nav-item').addClass('active');
             }
         });
+    });
+</script>
+
+<script>
+    function showSuccessAlert() {
+        Swal.fire({
+            icon: 'success',
+            title: 'Sukses',
+            text: 'Berhasil!'
+        });
+    }
+</script>
+<script>
+    function showSuccessAlert() {
+        Swal.fire({
+            icon: 'success',
+            title: 'Sukses',
+            text: 'Berhasil!'
+        });
+    }
+    </script>
+
+    <script>
+   $(function(){
+    $(document).on('click', '#delete', function(e){
+      e.preventDefault();
+      var link=$(this).attr("href");
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-danger',
+          cancelButton: 'btn btn-success'
+        },
+        buttonsStyling: false
+      })
+
+      swalWithBootstrapButtons.fire({
+        title: 'Anda yakin??',
+        text: "Data terhapus tidak dapat dikembalikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Hapus!',
+        cancelButtonText: 'Batal!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href=link
+          swalWithBootstrapButtons.fire(
+            'Terhapus!',
+            'Data sudah dihapus.',
+            'success'
+          )
+        } 
+      })
+    });
+   });
+</script>
+
+
+@if (session('success'))
+    <script>
+        showSuccessAlert();
+    </script>
+ @endif
+
+ <script>
+    $(document).ready(function () {
+        $('#order_date, #payment_date').flatpickr({
+            dateFormat: "d/m/Y",
+            autoclose: true, 
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#customer , #packet').select2()
+      
     });
 </script>
 

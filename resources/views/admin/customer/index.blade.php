@@ -3,7 +3,7 @@
 
 
 <div class="container-fluid">
-<h3 class="h3 mb-3 text-gray-800">Table Pelanggan</h3>
+<h3 class="h3 mb-3 text-gray-800">Table Customers</h3>
 <p class="mb-4">DataTables Customers Alisha Laundry</p>
 
 <div class="card shadow mb-4">
@@ -15,22 +15,29 @@
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
-                    <tr>
-                        <th>Kd_Pelanggan</th>
-                        <th>Nama</th>
-                        <th>Alamat</th>
-                        <th>NoTelp</th>
-                        <th>Action</th>
+                    <tr>          
+                        <th class="text-center">No</th>
+                        <th class="text-center">Kd_Customers</th>
+                        <th class="text-center">Nama</th>
+                        <th class="text-center">Alamat</th>
+                        <th class="text-center">NoTelp</th>
+                        <th class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
+                @foreach($customers as $data)
                     <tr>
-                        <td>Tiger Nixon</td>
-                        <td>System Architect</td>
-                        <td>Edinburgh</td>
-                        <td>61</td>
-                        <td>2011/04/25</td>
+                        <td class="text-center">{{ $customers->count() - $loop->index }}</td>
+                        <td class="text-center">{{ $data->cd_customers }}</td>
+                        <td class="text-center">{{$data->customer_name}}</td>
+                        <td class="text-center">{{$data->address}}</td>
+                        <td class="text-center">{{$data->phone_number}}</td>
+                        <td class="text-center">
+                        <a href="{{ route('customer.edit', $data->cd_customers) }}" class="btn btn-warning btn-sm"><i class="fa fa-edit fa-lg" style="color:white"></i></a>
+                        <a href="{{ route('customer.delete', $data->cd_customers) }}" id="delete" class="btn btn-danger btn-sm"><i class="fa fa-trash fa-lg" style="color:white"></i></a>
+                        </td>
                     </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>

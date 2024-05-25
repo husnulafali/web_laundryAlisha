@@ -32,21 +32,21 @@
 </li>
 
 <li class="nav-item">
-    <a class="nav-link" href="tables.html">
+    <a class="nav-link" href="{{route('packet.index')}}">
         <i class="fas fa-fw fa-tablets"></i>
         <span>Paket</span></a>
 </li>
 
 <li class="nav-item">
-    <a class="nav-link" href="tables.html">
+    <a class="nav-link" href="{{route('promo.index')}}">
         <i class="fas fa-fw fa-magnet"></i>
         <span>Promo</span></a>
 </li>
 
 <li class="nav-item">
-    <a class="nav-link" href="tables.html">
+    <a class="nav-link" href="{{route('order.index')}}">
         <i class="fas fa-fw fa-dollar-sign"></i>
-        <span>Pesanan</span></a>
+        <span>Order</span></a>
 </li>
 
 
@@ -62,11 +62,24 @@
         <span>Laporan</span></a>
 </li>
 
+<hr class="sidebar-divider">
+
+<li class="nav-item">
+    <a class="nav-link" href="tables.html">
+        <i class="fas fa-fw fa-user-friends "></i>
+        <span>Data User</span>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="{{route('wa.view')}}">
+        <i class="fas fa-fw fa-check "></i>
+        <span>Tautan WA</span>
+    </a>
+</li>
 
 
-<!-- Divider -->
 <hr class="sidebar-divider d-none d-md-block">
-
 <!-- Sidebar Toggler (Sidebar) -->
 <div class="text-center d-none d-md-inline">
     <button class="rounded-circle border-0" id="sidebarToggle"></button>
