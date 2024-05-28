@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\Customer;
 use App\Models\Packet;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Session;
 
 
 
@@ -169,43 +170,47 @@ class orderController extends Controller
             return redirect()->route('order.index')->with('success', 'Order berhasil diperbarui.');
         }
 
-        public function updateLaundryStatus(Request $request, $cd_orders){
+        public function updateLaundryStatus(Request $request, $cd_orders) {
             $order = Order::findOrFail($cd_orders);
             $request->validate([
                 'status' => 'required|in:Baru,Dalam Pengerjaan,Laundry Selesai,di Antar',
             ]);
             $order->laundry_status = $request->status;
             $order->save();
+    
             if ($order->laundry_status === 'Laundry Selesai') {
-                $customer = $order->customers; 
+                $customer = $order->customers;
                 $phoneNumber = $customer->phone_number;
                 $customerName = $customer->customer_name;
-                $message = "Halo *$customerName*, Laundry Anda dengan kode order *$order->cd_orders* telah *selesai*.Ketik *1* untuk melihat Promo Menarik";
-                $curl = curl_init();
-        
-                curl_setopt_array($curl, array(
-                    CURLOPT_URL => 'https://api.fonnte.com/send',
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_ENCODING => '',
-                    CURLOPT_MAXREDIRS => 10,
-                    CURLOPT_TIMEOUT => 0,
-                    CURLOPT_FOLLOWLOCATION => true,
-                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                    CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => array(
-                        'target' => $phoneNumber, 
-                        'message' => $message 
-                    ),
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Ji6!muFW96AvQxKP!c4v' // Token
-            ),
-        ));
-        $response = curl_exec($curl);
-        curl_close($curl);
-        }
+                $message = "Halo *$customerName*, Laundry Anda dengan kode order *$order->cd_orders* telah *selesai*. Ketik *1* untuk melihat Promo Menarik";
 
-    return back()->with('success', 'Status laundry berhasil diperbarui.');
-}
-  
-   
-}
+                $deviceToken = Session::get('deviceToken');
+                if ($deviceToken) {
+                    $curl = curl_init();
+    
+                    curl_setopt_array($curl, [
+                        CURLOPT_URL => 'https://api.fonnte.com/send',
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => '',
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 0,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => 'POST',
+                        CURLOPT_POSTFIELDS => [
+                            'target' => $phoneNumber,
+                            'message' => $message
+                        ],
+                        CURLOPT_HTTPHEADER => [
+                            'Authorization: ' . $deviceToken
+                        ],
+                    ]);
+    
+                    $response = curl_exec($curl);
+                    curl_close($curl);
+                }
+            }
+    
+            return back()->with('success', 'Status laundry berhasil diperbarui.');
+        }
+    }
