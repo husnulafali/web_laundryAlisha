@@ -9,6 +9,8 @@ use App\Models\Customer;
 use App\Models\Packet;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Http;
+
 
 
 
@@ -213,4 +215,6 @@ class orderController extends Controller
     
             return back()->with('success', 'Status laundry berhasil diperbarui.');
         }
-    }
+    
+       
+}

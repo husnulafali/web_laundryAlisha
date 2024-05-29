@@ -60,7 +60,8 @@
                         <td>
                         <a href="{{ route('order.edit', $data->cd_orders) }}" class="btn btn-warning btn-sm"><i class="fa fa-edit fa-lg" style="color:white"></i></a>
                         <a href="" target="_blank" class="btn btn-success btn-sm"><i class="fa fa-print fa-lg" style="color:white"></i></a>
-                        <a href="" class="btn btn-info btn-sm"><i class="fa fa-download fa-lg" style="color:black"></i></a>
+                        <a href="" class="btn btn-info btn-sm"><i class="fa fa-download fa-lg" style="color:white"></i></a>
+                        <a href="" class="btn btn-info btn-sm"><i class="fa fa-share fa-lg" style="color:white"></i></a>
                         </td>
                     </tr>
                     @endforeach

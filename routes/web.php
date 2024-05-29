@@ -6,6 +6,8 @@ use App\Http\Controllers\backend\packetController;
 use App\Http\Controllers\backend\promoController;
 use App\Http\Controllers\backend\orderController;
 use App\Http\Controllers\backend\waController;
+use App\Http\Controllers\backend\sentMessageStatusController;
+
 
 
 Route::get('/', function () {
@@ -43,7 +45,10 @@ Route::prefix('order')->group(function(){
     Route::get('/edit/{cd_orders}', [orderController::class, 'edit'])->name('order.edit');
     Route::post('/update/{cd_orders}', [orderController::class, 'update'])->name('order.update');
     Route::post('/order/update-statusLaundry/{cd_orders}',[orderController::class, 'updateLaundryStatus'])->name('order.updateLaundryStatus');
-    Route::get('/cek-message/{messageId}', [orderController::class, 'cekMessage'])->name('cek.message');
+   
+
+
+    
 });
 
 Route::prefix('wa')->group(function(){
@@ -51,3 +56,4 @@ Route::prefix('wa')->group(function(){
     Route::get('/qr-code/{deviceToken}', [WaController::class, 'getQrCode'])->name('qr-code');
     Route::post('/disconnect/{deviceToken}', [WaController::class, 'disconnectDevice'])->name('devices.disconnect');
 });
+
