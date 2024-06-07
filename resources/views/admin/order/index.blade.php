@@ -10,6 +10,7 @@
     <div class="card-header py-3">
         <a href="{{route('order.add')}}"><button style="width: 90px; height: 38px; font-size: 16px; border-radius: 4px; float: right; padding: 2px 2px; " type="button" class="btn btn-primary waves-light btn-sm waves-effect">Tambah</button></a>
     </div>
+  
     
     <div class="card-body">
         <div class="table-responsive">

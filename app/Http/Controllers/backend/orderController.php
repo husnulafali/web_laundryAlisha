@@ -184,7 +184,9 @@ class orderController extends Controller
                 $customer = $order->customers;
                 $phoneNumber = $customer->phone_number;
                 $customerName = $customer->customer_name;
-                $message = "Halo *$customerName*, Laundry Anda dengan kode order *$order->cd_orders* telah *selesai*. Ketik *1* untuk melihat Promo Menarik";
+                $message = "Halo *$customerName*,\n" .
+                "Laundry Anda dengan kode order *$order->cd_orders* telah *selesai*.\n";
+               
 
                 $deviceToken = Session::get('deviceToken');
                 if ($deviceToken) {

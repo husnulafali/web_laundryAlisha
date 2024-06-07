@@ -19,6 +19,16 @@
         <span>Dashboard</span></a>
 </li>
 
+<li class="nav-item">
+    <a class="nav-link" href="tables.html">
+        <i class="fas fa-fw fa-user-friends "></i>
+        <span>Data User</span>
+    </a>
+</li>
+
+
+
+
 <!-- Divider -->
 <hr class="sidebar-divider">
 
@@ -49,8 +59,15 @@
         <span>Order</span></a>
 </li>
 
-
 <li class="nav-item">
+    <a class="nav-link" href="{{route('devices.index')}}">
+        <i class="fas fa-fw fa-check "></i>
+        <span>Tautan WA</span>
+    </a>
+</li>
+
+
+<!-- <li class="nav-item">
     <a class="nav-link" href="tables.html">
         <i class="fas fa-fw fa-money-bill-wave-alt"></i>
         <span>Pengeluaran</span></a>
@@ -60,23 +77,10 @@
     <a class="nav-link" href="tables.html">
         <i class="fas fa-fw fa-book"></i>
         <span>Laporan</span></a>
-</li>
+</li> -->
 
-<hr class="sidebar-divider">
 
-<li class="nav-item">
-    <a class="nav-link" href="tables.html">
-        <i class="fas fa-fw fa-user-friends "></i>
-        <span>Data User</span>
-    </a>
-</li>
 
-<li class="nav-item">
-    <a class="nav-link" href="{{route('devices.index')}}">
-        <i class="fas fa-fw fa-check "></i>
-        <span>Tautan WA</span>
-    </a>
-</li>
 
 
 <hr class="sidebar-divider d-none d-md-block">

@@ -44,11 +44,7 @@ Route::prefix('order')->group(function(){
     Route::post('/store', [orderController::class, 'store'])->name('order.store');
     Route::get('/edit/{cd_orders}', [orderController::class, 'edit'])->name('order.edit');
     Route::post('/update/{cd_orders}', [orderController::class, 'update'])->name('order.update');
-    Route::post('/order/update-statusLaundry/{cd_orders}',[orderController::class, 'updateLaundryStatus'])->name('order.updateLaundryStatus');
-   
-
-
-    
+    Route::post('/order/update-statusLaundry/{cd_orders}',[orderController::class, 'updateLaundryStatus'])->name('order.updateLaundryStatus');   
 });
 
 Route::prefix('wa')->group(function(){
