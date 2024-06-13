@@ -22,7 +22,7 @@
 <li class="nav-item">
     <a class="nav-link" href="tables.html">
         <i class="fas fa-fw fa-user-friends "></i>
-        <span>Data User</span>
+        <span>Master Data</span>
     </a>
 </li>
 
@@ -58,6 +58,13 @@
         <i class="fas fa-fw fa-dollar-sign"></i>
         <span>Order</span></a>
 </li>
+
+<li class="nav-item">
+    <a class="nav-link" href="#">
+        <i class="fas fa-fw fa-book"></i>
+        <span>Laporan Order</span></a>
+</li>
+
 
 <li class="nav-item">
     <a class="nav-link" href="{{route('devices.index')}}">
