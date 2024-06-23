@@ -39,7 +39,7 @@
                         @endif
                         </td>
                         <td class="text-center">{{$data->processing_time}}</td>
-                        <td class="text-center"> Rp.{{ number_format($data->price, 2) }}</td>    
+                        <td class="text-center"> Rp {{ number_format($data->price, 2, ',', '.') }}</td> 
                         <td class="text-center">
                         <a href="{{ route('packet.edit', $data->cd_packets) }}" class="btn btn-warning btn-sm"><i class="fa fa-edit fa-lg" style="color:white"></i></a>
                         <a href="{{ route('packet.delete', $data->cd_packets) }}" id="delete" class="btn btn-danger btn-sm"><i class="fa fa-trash fa-lg" style="color:white"></i></a>

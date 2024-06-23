@@ -22,7 +22,7 @@
 <li class="nav-item">
     <a class="nav-link" href="tables.html">
         <i class="fas fa-fw fa-user-friends "></i>
-        <span>Master Data</span>
+        <span>Data Pengguna</span>
     </a>
 </li>
 

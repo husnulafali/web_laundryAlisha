@@ -36,7 +36,7 @@
                 @foreach($orders as $data)
                     <tr>
                     <td class="text-center">{{ $orders->count() - $loop->index }}</td>
-                    <td class="text-center"> {{ \Carbon\Carbon::createFromFormat('Y-m-d', $data->order_date)->format('d/m/Y') }}</td>
+                    <td class="text-center">  {{ \Carbon\Carbon::createFromFormat('Y-m-d', $data->order_date)->format('d/m/Y H:i') }}</td>
                         <td class="text-center">{{$data->cd_orders}}</td>
                         <td class="text-center">{{ optional($data->customers)->customer_name ?? '-' }}</td>
                         <td class="text-center">{{ optional($data->packets)->packet_name ?? '-' }}</td>
@@ -59,10 +59,15 @@
                         </td>
                         <td class="text-center">{{ $data->note ?? '-' }}</td>  
                         <td>
-                        <a href="{{ route('order.edit', $data->cd_orders) }}" class="btn btn-warning btn-sm"><i class="fa fa-edit fa-lg" style="color:white"></i></a>
-                        <a href="" target="_blank" class="btn btn-success btn-sm"><i class="fa fa-print fa-lg" style="color:white"></i></a>
-                        <a href="" class="btn btn-info btn-sm"><i class="fa fa-download fa-lg" style="color:white"></i></a>
-                        <a href="" class="btn btn-info btn-sm"><i class="fa fa-share fa-lg" style="color:white"></i></a>
+                        <div style="display: flex; gap: 2px;">
+                         <a href="{{ route('order.edit', $data->cd_orders) }}" class="btn btn-warning btn-sm" style="display: inline-block; margin-right: 5px;">
+                          <i class="fa fa-edit fa-lg" style="color:white"></i>
+                         </a>
+                          <a href="" target="_blank" class="btn btn-success btn-sm" style="display: inline-block;">
+                         <i class="fa fa-print fa-lg" style="color:white"></i>
+                          </a>
+                          </div>
+
                         </td>
                     </tr>
                     @endforeach

@@ -10,7 +10,7 @@
                 @csrf
 
                 <div class="form-group">
-                    <label for="cd_customers">Kode Customers</label>
+                <label for="cd_customers">Kode Customers </label>
                     <input type="text" id="cd_customers" class="form-control" name="cd_customers" value="{{ $newKodeCustomer }}" readonly>
                 </div>
 

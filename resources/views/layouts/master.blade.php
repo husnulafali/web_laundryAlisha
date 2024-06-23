@@ -209,7 +209,10 @@
  <script>
     $(document).ready(function () {
         $('#order_date, #payment_date').flatpickr({
-            dateFormat: "d/m/Y",
+            enableTime: true,
+            dateFormat: "d/m/Y H:i",
+            defaultHour: new Date().getHours(), 
+            defaultMinute: new Date().getMinutes(), 
             autoclose: true, 
         });
     });

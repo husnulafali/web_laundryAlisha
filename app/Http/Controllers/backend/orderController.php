@@ -30,69 +30,73 @@ class orderController extends Controller
         return view('admin.order.add', compact('newKodeOrder','customers','packets'));
     }
     public function store(Request $request)
-    {
-        $rules = [
-            'cd_orders' => 'required',
-            'cd_customers' => 'required',
-            'cd_packets' => 'required',
-            'order_date' => 'required|date_format:d/m/Y',
-            'weight' => 'required|numeric',
-            'discount' => 'nullable|numeric',
-            'total_payment' => 'required',
-            'payment_date' =>'nullable|date_format:d/m/Y', 
-            'payment_status' => 'required|in:Belum Lunas,Lunas',
-            'laundry_status' => 'nullable|in:Baru,Dalam Pengerjaan,Laundry Selesai,di Antar',
-            'note' => 'nullable'
-        ];
-         $messages =[
-            'cd_orders.required' => 'Kode order wajib diisi.',
-            'cd_customers.required' => 'Kode pelanggan wajib diisi.',
-            'cd_packets.required' => 'Kode paket wajib diisi.',
-            'order_date.required' => 'Tanggal order wajib diisi.',
-            'weight.required' => 'Berat laundry wajib diisi.',
-            'weight.numeric' => 'Berat laundry harus berupa angka.',
-            'discount.numeric' => 'Diskon harus berupa angka.',
-            'total_payment.required' => 'Total pembayaran wajib diisi.',
-            'payment_status.required' => 'Status pembayaran wajib diisi.',
-            'payment_status.in' => 'Status pembayaran harus "Belum Lunas" atau "Lunas".',
-            'laundry_status.in' => 'Status laundry tidak valid.',
-          
-        ];
-             $this->validate($request, $rules, $messages);
+{
+    $rules = [
+        'cd_orders' => 'required',
+        'cd_customers' => 'required',
+        'cd_packets' => 'required',
+        'order_date' => 'required|date_format:d/m/Y H:i', // Ubah format validasi menjadi d/m/Y H:i
+        'weight' => 'required|numeric',
+        'discount' => 'nullable|numeric',
+        'total_payment' => 'required',
+        'payment_date' => 'nullable|date_format:d/m/Y H:i', // Ubah format validasi menjadi d/m/Y H:i
+        'payment_status' => 'required|in:Belum Lunas,Lunas',
+        'laundry_status' => 'nullable|in:Baru,Dalam Pengerjaan,Laundry Selesai,di Antar',
+        'note' => 'nullable'
+    ];
 
-             $orderDate = \Carbon\Carbon::createFromFormat('d/m/Y', $request->order_date)->format('Y-m-d');
-             $paymentDate = $request->filled('payment_date') ? \Carbon\Carbon::createFromFormat('d/m/Y', $request->payment_date)->format('Y-m-d') : null;
-        
-         
-             $order = new Order();
-             $order->cd_orders= $request->input('cd_orders'); 
-             $order->cd_customers = $request->input('cd_customers'); 
-             $order->cd_packets = $request->input('cd_packets'); 
-             $order->order_date = $orderDate;
-             $order->weight = $request->weight;
-             $order->discount = $request->discount;
-             $order->total_payment = $request->total_payment; ;
-             $order->payment_date = $paymentDate;
-             $order->payment_status = $request->payment_status;
-             $order->laundry_status = $request->input('laundry_status', 'Baru');
-             $order->note = $request->note;
+    $messages = [
+        'cd_orders.required' => 'Kode order wajib diisi.',
+        'cd_customers.required' => 'Kode pelanggan wajib diisi.',
+        'cd_packets.required' => 'Kode paket wajib diisi.',
+        'order_date.required' => 'Tanggal order wajib diisi.',
+        'order_date.date_format' => 'Format tanggal dan waktu harus dd/mm/yyyy HH:ii.',
+        'weight.required' => 'Berat laundry wajib diisi.',
+        'weight.numeric' => 'Berat laundry harus berupa angka.',
+        'discount.numeric' => 'Diskon harus berupa angka.',
+        'total_payment.required' => 'Total pembayaran wajib diisi.',
+        'payment_status.required' => 'Status pembayaran wajib diisi.',
+        'payment_status.in' => 'Status pembayaran harus "Belum Lunas" atau "Lunas".',
+        'laundry_status.in' => 'Status laundry tidak valid.',
+    ];
 
-             $packet = Packet::find($request->cd_packets);
-             if ($packet) {
-                 $totalPayment = $packet->price * $request->weight;
-         
-                 if ($request->discount) {
-                     $Discount = $request->discount;
-                     $totalDiscount = ($Discount / 100) * $totalPayment;
-                     $totalPayment -= $totalDiscount;
-                 }   
-                 $order->total_payment = max(0, $totalPayment);
-             }
-         
-             $order->save();
-         
-             return redirect()->route('order.index')->with('success', 'order berhasil diupdate.');
-         }
+    $this->validate($request, $rules, $messages);
+
+    // Konversi format tanggal dan waktu
+    $orderDate = \Carbon\Carbon::createFromFormat('d/m/Y H:i', $request->order_date)->format('Y-m-d H:i:s');
+    $paymentDate = $request->filled('payment_date') ? \Carbon\Carbon::createFromFormat('d/m/Y H:i', $request->payment_date)->format('Y-m-d H:i:s') : null;
+
+    $order = new Order();
+    $order->cd_orders = $request->input('cd_orders');
+    $order->cd_customers = $request->input('cd_customers');
+    $order->cd_packets = $request->input('cd_packets');
+    $order->order_date = $orderDate;
+    $order->weight = $request->weight;
+    $order->discount = $request->discount;
+    $order->total_payment = $request->total_payment;
+    $order->payment_date = $paymentDate;
+    $order->payment_status = $request->payment_status;
+    $order->laundry_status = $request->input('laundry_status', 'Baru');
+    $order->note = $request->note;
+
+    // Hitung total pembayaran berdasarkan paket dan berat laundry
+    $packet = Packet::find($request->cd_packets);
+    if ($packet) {
+        $totalPayment = $packet->price * $request->weight;
+
+        if ($request->discount) {
+            $Discount = $request->discount;
+            $totalDiscount = ($Discount / 100) * $totalPayment;
+            $totalPayment -= $totalDiscount;
+        }
+
+        $order->total_payment = max(0, $totalPayment);
+    }
+
+    $order->save();
+
+    return redirect()->route('order.index')->with('success', 'Order berhasil ditambahkan.');
+}
 
 
         public function edit($cd_orders)

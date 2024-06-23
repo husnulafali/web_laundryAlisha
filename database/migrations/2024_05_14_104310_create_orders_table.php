@@ -12,11 +12,11 @@ return new class extends Migration
             $table->uuid('cd_orders')->primary(); 
             $table->uuid('cd_customers');
             $table->uuid('cd_packets');
-            $table->date('order_date');
+            $table->datetime('order_date');
             $table->float('weight', 8, 2);
             $table->float('discount', 8, 2)->nullable();
             $table->float('total_payment', 8, 2);
-            $table->date('payment_date')->nullable(); 
+            $table->datetime('payment_date')->nullable(); 
             $table->enum('payment_status', ['Belum Lunas', 'Lunas']);
             $table->enum('laundry_status', ['Baru','Dalam Pengerjaan','Laundry Selesai','di Antar',])->nullable();
             $table->string('note')->nullable();
