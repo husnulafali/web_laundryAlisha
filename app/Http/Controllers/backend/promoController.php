@@ -52,35 +52,36 @@ class promoController extends Controller
         $editData = Promo::findOrFail($id);
          return view('admin.promo.edit', compact('editData'));
     }
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
         $rules = [
             'promo_name' => 'required',
-            'image_promo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', 
+            'image_promo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
         ];
         $messages = [
             'promo_name.required' => 'Judul Promo Harus Diisi.',
-            'image_promo.required' => 'File Harus Diisi.',
             'image_promo.image' => 'File harus berupa gambar.',
             'image_promo.mimes' => 'File harus berformat jpeg, png, jpg, atau gif.',
             'image_promo.max' => 'Ukuran file tidak boleh lebih dari 2MB.',
         ];
-    
+
         $request->validate($rules, $messages);
-    
+
+        $promo = Promo::findOrFail($id);
+        $promo->promo_name = $request->input('promo_name');
+
         if ($request->hasFile('image_promo')) {
+            if ($promo->image_promo && Storage::exists('public/promo_images/' . $promo->image_promo)) {
+                Storage::delete('public/promo_images/' . $promo->image_promo);
+            }
             $image = $request->file('image_promo');
             $imageName = time().'.'.$image->getClientOriginalExtension();
             $image->storeAs('public/promo_images', $imageName); 
-        } else {
-            $imageName = null;
+            $promo->image_promo = $imageName;
         }
-    
-        $promo = Promo::findOrFail($id);
-        $promo->promo_name = $request->input('promo_name'); 
-        $promo->image_promo = $imageName;
-    
+
         $promo->save();
-        return redirect()->route('promo.index')->with('success', 'Promo berhasil ditambahkan');
+        return redirect()->route('promo.index')->with('success', 'Promo berhasil diupdate');
     }
     public function delete($id){
    

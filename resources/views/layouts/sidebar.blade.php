@@ -14,13 +14,13 @@
 
 <!-- Nav Item - Dashboard -->
 <li class="nav-item ">
-    <a class="nav-link" href="index.html">
+    <a class="nav-link" href="{{route('dashboard.index')}}">
         <i class="fas fa-fw fa-tachometer-alt"></i>
         <span>Dashboard</span></a>
 </li>
 
 <li class="nav-item">
-    <a class="nav-link" href="tables.html">
+    <a class="nav-link" href="{{route('user.index')}}">
         <i class="fas fa-fw fa-user-friends "></i>
         <span>Data Pengguna</span>
     </a>
@@ -36,10 +36,13 @@
 <!-- Nav Item - Pages Collapse Menu -->
 
 <li class="nav-item">
-    <a class="nav-link" href="{{route('customer.index')}}">
+    <a class="nav-link" href="{{ Auth::user()->role === 'owner' ? route('customer.index') : route('customer.index') }}">
         <i class="fas fa-fw fa-user"></i>
         <span>Pelanggan</span></a>
 </li>
+
+
+
 
 <li class="nav-item">
     <a class="nav-link" href="{{route('packet.index')}}">

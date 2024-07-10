@@ -19,7 +19,7 @@ use Carbon\Carbon;
 class orderController extends Controller
 {
     public function index(){
-        $order['orders']=Order::with(['customers', 'packets'])->paginate(100);
+        $order['orders'] = Order::with(['customers', 'packets'])->orderBy('created_at', 'desc')->get();
             return view('admin.order.index', $order);
     }
     public function add()
@@ -35,11 +35,11 @@ class orderController extends Controller
         'cd_orders' => 'required',
         'cd_customers' => 'required',
         'cd_packets' => 'required',
-        'order_date' => 'required|date_format:d/m/Y H:i', // Ubah format validasi menjadi d/m/Y H:i
+        'order_date' => 'required|date_format:d/m/Y H:i', 
         'weight' => 'required|numeric',
         'discount' => 'nullable|numeric',
         'total_payment' => 'required',
-        'payment_date' => 'nullable|date_format:d/m/Y H:i', // Ubah format validasi menjadi d/m/Y H:i
+        'payment_date' => 'nullable|date_format:d/m/Y H:i', 
         'payment_status' => 'required|in:Belum Lunas,Lunas',
         'laundry_status' => 'nullable|in:Baru,Dalam Pengerjaan,Laundry Selesai,di Antar',
         'note' => 'nullable'
@@ -79,7 +79,6 @@ class orderController extends Controller
     $order->laundry_status = $request->input('laundry_status', 'Baru');
     $order->note = $request->note;
 
-    // Hitung total pembayaran berdasarkan paket dan berat laundry
     $packet = Packet::find($request->cd_packets);
     if ($packet) {
         $totalPayment = $packet->price * $request->weight;
@@ -113,11 +112,11 @@ class orderController extends Controller
                 'cd_orders' => 'required',
                 'cd_customers' => 'required',
                 'cd_packets' => 'required',
-                'order_date' => 'required|date_format:d/m/Y',
+                'order_date' => 'required|date_format:d/m/Y H:i',
                 'weight' => 'required|numeric',
                 'discount' => 'nullable|numeric',
                 'total_payment' => 'required',
-                'payment_date' =>'nullable|date_format:d/m/Y', 
+                'payment_date' =>'nullable|date_format:d/m/Y H:i', 
                 'payment_status' => 'required|in:Belum Lunas,Lunas',
                 'laundry_status' => 'nullable|in:Baru,Dalam Pengerjaan,Laundry Selesai,di Antar',
                 'note' => 'nullable'
@@ -139,8 +138,8 @@ class orderController extends Controller
     
             $this->validate($request, $rules, $messages);
     
-            $orderDate = \Carbon\Carbon::createFromFormat('d/m/Y', $request->order_date)->format('Y-m-d');
-            $paymentDate = $request->filled('payment_date') ? \Carbon\Carbon::createFromFormat('d/m/Y', $request->payment_date)->format('Y-m-d') : null;
+            $orderDate = \Carbon\Carbon::createFromFormat('d/m/Y H:i', $request->order_date)->format('Y-m-d H:i:s ');
+            $paymentDate = $request->filled('payment_date') ? \Carbon\Carbon::createFromFormat('d/m/Y H:i', $request->payment_date)->format('Y-m-d H:i:s') : null;
     
             $order = Order::findOrFail($cd_orders);
             $order->cd_orders = $request->input('cd_orders'); 

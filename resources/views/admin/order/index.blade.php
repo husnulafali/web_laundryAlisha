@@ -35,8 +35,8 @@
                 <tbody>
                 @foreach($orders as $data)
                     <tr>
-                    <td class="text-center">{{ $orders->count() - $loop->index }}</td>
-                    <td class="text-center">  {{ \Carbon\Carbon::createFromFormat('Y-m-d', $data->order_date)->format('d/m/Y H:i') }}</td>
+                        <td class="text-center">{{ $orders->count() - $loop->index }}</td>
+                    <td class="text-center">{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $data->order_date)->format('d/m/Y H:i') }}</td>
                         <td class="text-center">{{$data->cd_orders}}</td>
                         <td class="text-center">{{ optional($data->customers)->customer_name ?? '-' }}</td>
                         <td class="text-center">{{ optional($data->packets)->packet_name ?? '-' }}</td>
@@ -44,7 +44,7 @@
                         <td class="text-center">{{ $data->discount ?? '-' }}%</td>
                         <td class="text-center">Rp.{{ number_format($data->total_payment, 2) }}</td>    
                         <td class="text-center" style="color: {{ $data->payment_status === 'Belum Lunas' ? 'red' : 'green' }}">{{ $data->payment_status }}</td>
-                        <td class="text-center">{{ isset($data->payment_date) ? \Carbon\Carbon::createFromFormat('Y-m-d', $data->payment_date)->format('d/m/Y') : '-' }}</td>
+                        <td class="text-center">{{ isset($data->payment_date) ? \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $data->payment_date)->format('d/m/Y H:i') : '-' }}</td>
                         <td class="text-center">
                         <form action="{{ route('order.updateLaundryStatus', $data->cd_orders) }}" method="POST">
                          @csrf

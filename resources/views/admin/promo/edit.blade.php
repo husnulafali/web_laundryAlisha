@@ -27,7 +27,7 @@
     </div>
     <div class="custom-file mt-2">
         <input type="file" class="custom-file-input @error('image_promo') is-invalid @enderror" id="image_promo" name="image_promo" accept=".jpg, .jpeg, .png, .gif">
-        <label class="custom-file-label" for="image_promo">Pilih file</label> <!-- Berikan teks default -->
+        <label class="custom-file-label" for="image_promo">Pilih file</label> 
         @error('image_promo')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
