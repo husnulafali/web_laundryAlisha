@@ -7,9 +7,13 @@
 <p class="mb-4">DataTables Orders Alisha Laundry</p>
 
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <a href="{{route('order.add')}}"><button style="width: 90px; height: 38px; font-size: 16px; border-radius: 4px; float: right; padding: 2px 2px; " type="button" class="btn btn-primary waves-light btn-sm waves-effect">Tambah</button></a>
-    </div>
+<div class="card-header py-3">
+            @if (Auth::user()->role == 'pegawai')
+                <a href="{{ route('order.add') }}">
+                    <button style="width: 90px; height: 38px; font-size: 16px; border-radius: 4px; float: right; padding: 2px 2px;" type="button" class="btn btn-primary waves-light btn-sm waves-effect">Tambah</button>
+                </a>
+            @endif
+        </div>
   
     
     <div class="card-body">
@@ -29,7 +33,9 @@
                         <th class="text-center">Tanggal Pembayaran</th>
                         <th class="text-center">Status Laundry</th>
                         <th class="text-center">Catatan</th>
-                        <th>Action</th>
+                        @if (Auth::user()->role == 'pegawai')
+                                <th class="text-center">Action</th>
+                            @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -46,29 +52,30 @@
                         <td class="text-center" style="color: {{ $data->payment_status === 'Belum Lunas' ? 'red' : 'green' }}">{{ $data->payment_status }}</td>
                         <td class="text-center">{{ isset($data->payment_date) ? \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $data->payment_date)->format('d/m/Y H:i') : '-' }}</td>
                         <td class="text-center">
-                        <form action="{{ route('order.updateLaundryStatus', $data->cd_orders) }}" method="POST">
-                         @csrf
-                         @method('POST')
-                        <select name="status" onchange="this.form.submit()">
-                        <option value="Baru" {{ $data->laundry_status == 'Baru' ? 'selected' : '' }}>Baru</option>
-                        <option value="Dalam Pengerjaan" {{ $data->laundry_status == 'Dalam Pengerjaan' ? 'selected' : '' }}>Dalam Pengerjaan</option>
-                        <option value="Laundry Selesai" {{ $data->laundry_status == 'Laundry Selesai' ? 'selected' : '' }}>Laundry Selesai</option>
-                        <option value="di Antar" {{ $data->laundry_status == 'di Antar' ? 'selected' : '' }}>di Antar</option>
-                         </select>
-                        </form>
-                        </td>
+                                    @if (Auth::user()->role == 'pegawai')
+                                        <form action="{{ route('order.updateLaundryStatus', $data->cd_orders) }}" method="POST">
+                                            @csrf
+                                            @method('POST')
+                                            <select name="status" onchange="this.form.submit()">
+                                                <option value="Baru" {{ $data->laundry_status == 'Baru' ? 'selected' : '' }}>Baru</option>
+                                                <option value="Dalam Pengerjaan" {{ $data->laundry_status == 'Dalam Pengerjaan' ? 'selected' : '' }}>Dalam Pengerjaan</option>
+                                                <option value="Laundry Selesai" {{ $data->laundry_status == 'Laundry Selesai' ? 'selected' : '' }}>Laundry Selesai</option>
+                                                <option value="di Antar" {{ $data->laundry_status == 'di Antar' ? 'selected' : '' }}>di Antar</option>
+                                            </select>
+                                        </form>
+                                    @else
+                                        {{ $data->laundry_status }}
+                                    @endif
+                                </td>
                         <td class="text-center">{{ $data->note ?? '-' }}</td>  
-                        <td>
-                        <div style="display: flex; gap: 2px;">
-                         <a href="{{ route('order.edit', $data->cd_orders) }}" class="btn btn-warning btn-sm" style="display: inline-block; margin-right: 5px;">
-                          <i class="fa fa-edit fa-lg" style="color:white"></i>
-                         </a>
-                          <a href="" target="_blank" class="btn btn-success btn-sm" style="display: inline-block;">
-                         <i class="fa fa-print fa-lg" style="color:white"></i>
-                          </a>
-                          </div>
-
-                        </td>
+                        @if (Auth::user()->role == 'pegawai')
+                                    <td class="text-center">
+                                        <a href="{{ route('order.edit', $data->cd_orders) }}" class="btn btn-warning btn-sm">
+                                            <i class="fa fa-edit fa-lg" style="color:white"></i>
+                                        </a>
+                                        
+                                    </td>
+                                @endif
                     </tr>
                     @endforeach
                 </tbody>

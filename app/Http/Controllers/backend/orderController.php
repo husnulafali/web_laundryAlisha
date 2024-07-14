@@ -10,14 +10,15 @@ use App\Models\Packet;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Http;
-
-
-
-
 use Carbon\Carbon;
 
 class orderController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('role:pegawai')->except(['index']);
+    }
     public function index(){
         $order['orders'] = Order::with(['customers', 'packets'])->orderBy('created_at', 'desc')->get();
             return view('admin.order.index', $order);
@@ -62,7 +63,7 @@ class orderController extends Controller
 
     $this->validate($request, $rules, $messages);
 
-    // Konversi format tanggal dan waktu
+    
     $orderDate = \Carbon\Carbon::createFromFormat('d/m/Y H:i', $request->order_date)->format('Y-m-d H:i:s');
     $paymentDate = $request->filled('payment_date') ? \Carbon\Carbon::createFromFormat('d/m/Y H:i', $request->payment_date)->format('Y-m-d H:i:s') : null;
 

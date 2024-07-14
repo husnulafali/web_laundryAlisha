@@ -128,15 +128,16 @@ class userController extends Controller
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email|max:255',
+            'username' => 'required|string|max:255',
             'password' => 'required|string|min:8',
         ]);
     
+        
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
     
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('username', 'password');
     
         if (Auth::attempt($credentials)) {
             return redirect()->route('dashboard.index')->with('success', 'Login berhasil');

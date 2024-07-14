@@ -9,6 +9,12 @@ use Illuminate\Support\Str;
 
 class CustomerController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('role:pegawai')->except(['index']);
+    }
+
     public function index()
     {
         $customers = Customer::orderBy('created_at', 'desc')->get();

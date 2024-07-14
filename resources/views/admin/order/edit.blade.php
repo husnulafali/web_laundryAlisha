@@ -24,7 +24,7 @@
                  <div class="input-group-prepend">
                   <label for="order_date" class="input-group-text">Tanggal Order</label>
                   </div>
-                   <input class="form-control @error('order_date') is-invalid @enderror" id="order_date" type="text" name="order_date" value="{{ \Carbon\Carbon::createFromFormat('Y-m-d', $editData->order_date)->format('d/m/y') }}" placeholder="dd/mm/yyyy"/>
+                  <input class="form-control @error('order_date') is-invalid @enderror" id="order_date" type="text" name="order_date"  value="{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $editData->order_date)->format('d/m/Y') }}">
                    <div class="input-group-append">
                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                     </div>
@@ -117,19 +117,22 @@
                 </div>
 
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <label for="payment_date" class="input-group-text">Tanggal Pembayaran</label>
-                    </div>
-                    <input class="form-control @error('payment_date') is-invalid @enderror" id="payment_date" type="text" name="payment_date" value="{{ \Carbon\Carbon::createFromFormat('Y-m-d', $editData->order_date)->format('d/m/y') }}" placeholder="dd/mm/yyyy"/>
-                    <div class="input-group-append">
-                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                    </div>
-                    @error('payment_date')
-                        <div class="invalid-feedback">
-                            {{$message}}
-                        </div>
-                    @enderror
-                </div>
+    <div class="input-group-prepend">
+        <label for="payment_date" class="input-group-text">Tanggal Pembayaran</label>
+    </div>
+    <input class="form-control @error('payment_date') is-invalid @enderror"
+           id="payment_date" type="text" name="payment_date"
+           value="{{ $editData->payment_date ? \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $editData->payment_date)->format('d/m/Y') : '' }}">
+    <div class="input-group-append">
+        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+    </div>
+    @error('payment_date')
+    <div class="invalid-feedback">
+        {{$message}}
+    </div>
+    @enderror
+</div>
+
 
                 <div class="mb-3">
                     <textarea class="form-control @error('note') is-invalid @enderror" id="note" rows="3" name="note" placeholder="Catatan">{{$editData->note}}</textarea>
