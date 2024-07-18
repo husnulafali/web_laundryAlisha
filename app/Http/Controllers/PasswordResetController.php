@@ -6,13 +6,12 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
 
 class PasswordResetController extends Controller
 {
     public function showResetForm()
     {
-        return view('admin.resetPassword.email');
+        return view('auth.resetPassword.email');
     }
 
     public function sendResetLink(Request $request)
@@ -52,7 +51,7 @@ class PasswordResetController extends Controller
             return redirect()->route('password.request')->withErrors(['email' => 'Email atau token tidak valid.']);
         }
     
-        return view('admin.resetPassword.reset', ['token' => $token, 'email' => $email]);
+        return view('auth.resetPassword.reset', ['token' => $token, 'email' => $email]);
     }
 
     public function resetPassword(Request $request)

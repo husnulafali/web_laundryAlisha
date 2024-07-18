@@ -26,8 +26,8 @@ class userController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'username' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'username' => 'required|string|max:10|unique:user',
+            'email' => 'required|string|email|unique:users',
             'password' => 'required|string|min:8',
             'role' => 'required|in:owner,pegawai',
         ];
@@ -35,11 +35,11 @@ class userController extends Controller
         $messages = [
             'username.required' => '*Username harus diisi',
             'username.string' => '*Username harus berupa string',
-            'username.max' => '*Username maksimal 255 karakter',
+            'username.max' => '*Username maksimal 10 karakter',
+            'username.unique' => '*Username sudah digunakan',
             'email.required' => '*Email harus diisi',
             'email.string' => '*Email harus berupa string',
             'email.email' => '*Format email tidak valid',
-            'email.max' => '*Email maksimal 255 karakter',
             'email.unique' => '*Email sudah digunakan',
             'password.required' => '*Password harus diisi',
             'password.string' => '*Password harus berupa string',
@@ -75,8 +75,8 @@ class userController extends Controller
         $user = User::findOrFail($id);
 
         $rules = [
-            'username' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'username' => 'required|string|max:10',
+            'email' => 'required|string|email|unique:users,email,' . $user->id,
             'password' => 'sometimes|nullable|string|min:8',
             'role' => 'required|in:owner,pegawai',
         ];
@@ -84,11 +84,11 @@ class userController extends Controller
         $messages = [
             'username.required' => '*Username harus diisi',
             'username.string' => '*Username harus berupa string',
-            'username.max' => '*Username maksimal 255 karakter',
+            'username.max' => '*Username maksimal 10 karakter',
+            'username.unique' => '*Username sudah digunakan',
             'email.required' => '*Email harus diisi',
             'email.string' => '*Email harus berupa string',
             'email.email' => '*Format email tidak valid',
-            'email.max' => '*Email maksimal 255 karakter',
             'email.unique' => '*Email sudah digunakan',
             'password.min' => '*Password minimal 8 karakter',
             'role.required' => '*Role harus diisi',
@@ -122,19 +122,26 @@ class userController extends Controller
 
     public function showLoginForm()
     {
-        return view('admin.login');
+        return view('auth.login');
     }
 
     public function login(Request $request)
     {
+        
+    
         $validator = Validator::make($request->all(), [
-            'username' => 'required|string|max:255',
+            'username' => 'required|string|max:10',
             'password' => 'required|string|min:8',
         ]);
     
-        
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
+        }
+    
+        // Mengecek apakah username ada di database
+        $user = User::where('username', $request->username)->first();
+        if (!$user) {
+            return redirect()->back()->with('error', 'Username tidak ditemukan');
         }
     
         $credentials = $request->only('username', 'password');
@@ -143,7 +150,7 @@ class userController extends Controller
             return redirect()->route('dashboard.index')->with('success', 'Login berhasil');
         }
     
-        return redirect()->back()->with('error', 'Email atau password salah');
+        return redirect()->back()->with('error', 'Password salah');
     }
     
     

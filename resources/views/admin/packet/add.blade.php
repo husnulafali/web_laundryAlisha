@@ -49,7 +49,7 @@
                 <div class="input-group-prepend">
                         <label for="weight" class="input-group-text">Harga</label>
                     </div>
-                          <input class="form-control @error('harga') is-invalid @enderror"  type="number" name="price" aria-label="">
+                          <input class="form-control @error('price') is-invalid @enderror"  type="number" name="price" aria-label="" placeholder="12000">
                           @error('price')
                             <div class="invalid-feedback">
                             {{$message}}
