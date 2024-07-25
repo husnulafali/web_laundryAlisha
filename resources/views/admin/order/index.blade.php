@@ -3,17 +3,41 @@
 
 
 <div class="container-fluid">
+
+ <!-- Alert Messages -->
+ @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @elseif (session('warning'))
+        <div class="alert alert-warning">
+            {{ session('warning') }}
+        </div>
+    @elseif (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    
 <h3 class="h3 mb-3 text-gray-800">Table Orders</h3>
 <p class="mb-4">DataTables Orders Alisha Laundry</p>
 
 <div class="card shadow mb-4">
 <div class="card-header py-3">
-            @if (Auth::user()->role == 'pegawai')
-                <a href="{{ route('order.add') }}">
-                    <button style="width: 90px; height: 38px; font-size: 16px; border-radius: 4px; float: right; padding: 2px 2px;" type="button" class="btn btn-primary waves-light btn-sm waves-effect">Tambah</button>
-                </a>
-            @endif
-        </div>
+    @if (Auth::user()->role == 'pegawai')
+
+    <a href="{{ route('order.updateMessage')}}">
+            <button style="width: 120px; height: 38px; font-size: 16px; border-radius: 4px; float: right; padding: 2px 2px; margin-left: 10px;" type="button" class="btn btn-warning waves-light btn-sm waves-effect">Custom Pesan</button>
+        </a>
+        <a href="{{ route('order.add') }}">
+            <button style="width: 90px; height: 38px; font-size: 16px; border-radius: 4px; float: right; padding: 2px 2px; " type="button" class="btn btn-primary waves-light btn-sm waves-effect">Tambah</button>
+        </a>
+        
+    @endif
+</div>
+
+      
   
     
     <div class="card-body">
@@ -48,7 +72,7 @@
                         <td class="text-center">{{ optional($data->packets)->packet_name ?? '-' }}</td>
                         <td class="text-center">{{$data->weight}} /kg</td>
                         <td class="text-center">{{ $data->discount ?? '-' }}%</td>
-                        <td class="text-center">Rp.{{ number_format($data->total_payment, 2) }}</td>    
+                        <td class="text-center">Rp.{{ number_format($data->total_payment, 2, ',', '.') }}</td>    
                         <td class="text-center" style="color: {{ $data->payment_status === 'Belum Lunas' ? 'red' : 'green' }}">{{ $data->payment_status }}</td>
                         <td class="text-center">{{ isset($data->payment_date) ? \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $data->payment_date)->format('d/m/Y H:i') : '-' }}</td>
                         <td class="text-center">
@@ -58,8 +82,8 @@
                                             @method('POST')
                                             <select name="status" onchange="this.form.submit()">
                                                 <option value="Baru" {{ $data->laundry_status == 'Baru' ? 'selected' : '' }}>Baru</option>
-                                                <option value="Dalam Pengerjaan" {{ $data->laundry_status == 'Dalam Pengerjaan' ? 'selected' : '' }}>Dalam Pengerjaan</option>
-                                                <option value="Laundry Selesai" {{ $data->laundry_status == 'Laundry Selesai' ? 'selected' : '' }}>Laundry Selesai</option>
+                                                <option value="Pengerjaan" {{ $data->laundry_status == 'Pengerjaan' ? 'selected' : '' }}>Pengerjaan</option>
+                                                <option value="Selesai" {{ $data->laundry_status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
                                                 <option value="di Antar" {{ $data->laundry_status == 'di Antar' ? 'selected' : '' }}>di Antar</option>
                                             </select>
                                         </form>
@@ -69,13 +93,17 @@
                                 </td>
                         <td class="text-center">{{ $data->note ?? '-' }}</td>  
                         @if (Auth::user()->role == 'pegawai')
-                                    <td class="text-center">
-                                        <a href="{{ route('order.edit', $data->cd_orders) }}" class="btn btn-warning btn-sm">
-                                            <i class="fa fa-edit fa-lg" style="color:white"></i>
-                                        </a>
-                                        
-                                    </td>
-                                @endif
+                        <td class="text-center" style="display: flex; justify-content: center; gap: 5px;">
+                        <a href="{{ route('order.edit', $data->cd_orders) }}" class="btn btn-warning btn-sm">
+                        <i class="fa fa-edit fa-lg" style="color:white"></i>
+                        </a>
+
+                        <a href="{{ route('order.print', $data->cd_orders) }}" class="btn btn-success btn-sm">
+                        <i class="fa fa-print fa-lg" style="color:white"></i>
+                        </a>
+                        </td>
+
+                     @endif
                     </tr>
                     @endforeach
                 </tbody>
@@ -86,5 +114,8 @@
 
 </div>
 @endsection
+
+
+
 
 

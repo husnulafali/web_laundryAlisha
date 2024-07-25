@@ -1,7 +1,7 @@
  <!-- Sidebar -->
  <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-<!-- Sidebar - Brand -->
+
 <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
     <div class="sidebar-brand-icon rotate-n-15">
         <i class="fas fa-store"></i>
@@ -9,10 +9,9 @@
     <div class="sidebar-brand-text mx-2">Alisha<sub> Laundry</sub></div>
 </a>
 
-<!-- Divider -->
+
 <hr class="sidebar-divider my-0">
 
-<!-- Nav Item - Dashboard -->
 <li class="nav-item ">
     <a class="nav-link" href="{{route('dashboard.index')}}">
         <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -30,39 +29,62 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('customer.owner.index') }}">
-                <i class="fas fa-fw fa-user"></i>
-                <span>Pelanggan</span>
-            </a>
-        </li>
-
-        <li class="nav-item">
             <a class="nav-link" href="{{ route('packet.index') }}">
                 <i class="fas fa-fw fa-tablets"></i>
-                <span>Paket</span>
+                <span>Data Paket</span>
             </a>
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('promo.index') }}">
-                <i class="fas fa-fw fa-magnet"></i>
-                <span>Promo</span>
+            <a class="nav-link" href="{{ route('customer.owner.index') }}">
+                <i class="fas fa-fw fa-user"></i>
+                <span>Data Pelanggan</span>
             </a>
         </li>
+
 
         <li class="nav-item">
             <a class="nav-link" href="{{ route('order.owner.index') }}">
                 <i class="fas fa-fw fa-shopping-cart"></i>
-                <span>Order</span>
+                <span>Data Order</span>
             </a>
         </li>
 
+        <hr class="sidebar-divider d-none d-md-block">
+
         <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="{{ route('report.index') }}">
             <i class="fas fa-fw fa-book"></i>
             <span>Laporan Order</span>
         </a>
     </li>
+
+  
+  
+    @elseif (Auth::user()->role == 'pegawai')
+
+    <li class="nav-item">
+            <a class="nav-link" href="{{ route('packet.pegawai.index') }}">
+                <i class="fas fa-fw fa-tablets"></i>
+                <span>Data Paket</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('customer.index') }}">
+                <i class="fas fa-fw fa-user"></i>
+                <span>Data Pelanggan</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('order.index') }}">
+                <i class="fas fa-fw fa-shopping-cart"></i>
+                <span>Data Order</span>
+            </a>
+        </li>
+
+        <hr class="sidebar-divider d-none d-md-block">
 
     <li class="nav-item">
         <a class="nav-link" href="{{ route('devices.index') }}">
@@ -71,40 +93,10 @@
         </a>
     </li>
 
-  
-    @elseif (Auth::user()->role == 'pegawai')
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('customer.index') }}">
-                <i class="fas fa-fw fa-user"></i>
-                <span>Pelanggan</span>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('order.index') }}">
-                <i class="fas fa-fw fa-shopping-cart"></i>
-                <span>Order</span>
-            </a>
-        </li>
-
-        <li class="nav-item">
-        <a class="nav-link" href="#">
-            <i class="fas fa-fw fa-book"></i>
-            <span>Laporan Order</span>
-        </a>
-    </li>
 
     @endif
 
 
-
-   
-
-
-
-
-
- 
 <hr class="sidebar-divider d-none d-md-block">
 <div class="text-center d-none d-md-inline">
     <button class="rounded-circle border-0" id="sidebarToggle"></button>

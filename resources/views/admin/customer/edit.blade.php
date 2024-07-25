@@ -2,7 +2,7 @@
 @section('layouts')
 
 <div class="container-fluid">
-    <h4 class="h4 mb-3 text-gray-800">Edit Customers</h4>
+    <h4 class="h4 mb-3 text-gray-800">Edit Pelanggan</h4>
 
     <div class="card shadow mb-4">
         <div class="card-body">
@@ -10,12 +10,12 @@
                 @csrf
 
                 <div class="form-group">
-                    <label for="cd_customers">Kode Customers</label>
+                    <label for="cd_customers">Kode Pelanggan</label>
                     <input type="text" id="cd_customers" class="form-control" name="cd_customers" value="{{$editData->cd_customers}}" readonly>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label" for="customer_name">Nama Customers</label>
+                    <label class="form-label" for="customer_name">Nama Pelanggan</label>
                     <input class="form-control @error('customer_name') is-invalid @enderror" id="customer_name" type="text" placeholder="" name="customer_name" value="{{$editData->customer_name}}">
                     @error('customer_name')
                     <div class="invalid-feedback">
@@ -25,7 +25,7 @@
                 </div>
 
                 <div class="mb-3">
-                <label class="form-label" for="address">Alamat</label>
+                <label class="form-label" for="address">Alamat Pelanggan</label>
                 <textarea class="form-control @error('address') is-invalid @enderror" id="address" rows="3" name="address">{{$editData->address}}</textarea>
                  @error('address')
                  <div class="invalid-feedback">

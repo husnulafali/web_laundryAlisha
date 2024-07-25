@@ -26,6 +26,8 @@ class Order extends Model
         'payment_status',
          'laundry_status',
          'note',
+         'custom_message',
+         'message_id'
           
     ];
 

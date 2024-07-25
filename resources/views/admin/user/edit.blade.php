@@ -10,6 +10,16 @@
                 @csrf
 
                 <div class="mb-3">
+                    <label class="form-label" for="username">Nama</label>
+                    <input class="form-control @error('name') is-invalid @enderror" id="username" type="text" placeholder="" name="name" value="{{$editData->name}}">
+                    @error('name')
+                    <div class="invalid-feedback">
+                        {{$message}}
+                    </div>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
                     <label class="form-label" for="username">Username</label>
                     <input class="form-control @error('username') is-invalid @enderror" id="username" type="text" placeholder="" name="username" value="{{$editData->username}}">
                     @error('username')

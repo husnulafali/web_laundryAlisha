@@ -26,16 +26,17 @@ class userController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'username' => 'required|string|max:10|unique:user',
+            'name' => 'required|string',
+            'username' => 'required|string|unique:users',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|min:8',
             'role' => 'required|in:owner,pegawai',
         ];
 
         $messages = [
+            'name.required' => '*Username harus diisi',
             'username.required' => '*Username harus diisi',
             'username.string' => '*Username harus berupa string',
-            'username.max' => '*Username maksimal 10 karakter',
             'username.unique' => '*Username sudah digunakan',
             'email.required' => '*Email harus diisi',
             'email.string' => '*Email harus berupa string',
@@ -55,6 +56,7 @@ class userController extends Controller
         }
 
         $user = User::create([
+            'name' => $request->name,
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -75,16 +77,17 @@ class userController extends Controller
         $user = User::findOrFail($id);
 
         $rules = [
-            'username' => 'required|string|max:10',
+            'name' => 'required|string',
+            'username' => 'required|string',
             'email' => 'required|string|email|unique:users,email,' . $user->id,
             'password' => 'sometimes|nullable|string|min:8',
             'role' => 'required|in:owner,pegawai',
         ];
 
         $messages = [
+            'name.required' => '*Username harus diisi',
             'username.required' => '*Username harus diisi',
             'username.string' => '*Username harus berupa string',
-            'username.max' => '*Username maksimal 10 karakter',
             'username.unique' => '*Username sudah digunakan',
             'email.required' => '*Email harus diisi',
             'email.string' => '*Email harus berupa string',
@@ -100,7 +103,7 @@ class userController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
+        $user->name = $request->name;
         $user->username = $request->username;
         $user->email = $request->email;
         if ($request->password) {
@@ -108,6 +111,8 @@ class userController extends Controller
         }
         $user->role = $request->role;
         $user->save();
+
+
 
         return redirect()->route('user.index')->with('success', 'User berhasil diperbarui');
     }
@@ -127,10 +132,8 @@ class userController extends Controller
 
     public function login(Request $request)
     {
-        
-    
         $validator = Validator::make($request->all(), [
-            'username' => 'required|string|max:10',
+            'username' => 'required|string|max:255', 
             'password' => 'required|string|min:8',
         ]);
     
@@ -138,25 +141,29 @@ class userController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
     
-        // Mengecek apakah username ada di database
-        $user = User::where('username', $request->username)->first();
-        if (!$user) {
-            return redirect()->back()->with('error', 'Username tidak ditemukan');
-        }
+        $loginType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
     
-        $credentials = $request->only('username', 'password');
+        $credentials = [
+            $loginType => $request->username,
+            'password' => $request->password,
+        ];
     
         if (Auth::attempt($credentials)) {
-            return redirect()->route('dashboard.index')->with('success', 'Login berhasil');
+            session(['user_id' => Auth::id()]);
+            $userName = Auth::user()->name;
+            return redirect()->route('dashboard.index')->with('success', "Selamat datang kembali $userName !");
         }
     
-        return redirect()->back()->with('error', 'Password salah');
+        return redirect()->back()->with('error', 'Data tidak cocok');
     }
     
+
     
     public function logout()
-    {
-        Auth::logout();
-        return redirect()->route('login.form');
-    }
+{
+    Auth::logout();
+    session()->flush(); 
+    return redirect()->route('login.form');
+}
+
 }

@@ -12,7 +12,7 @@ class User extends Authenticatable
     use HasApiTokens, Notifiable;
 
     protected $fillable = [
-        'username','email','password', 'role',
+       'name', 'username','email','password', 'role',
     ];
 
     protected $hidden = [
@@ -30,5 +30,10 @@ class User extends Authenticatable
         $this->reset_password_token = null;
         $this->token_created_at = null;
         $this->save();
+    }
+
+    public function hasRole($role)
+    {
+        return $this->role === $role;
     }
 }

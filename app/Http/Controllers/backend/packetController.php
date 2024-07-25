@@ -9,6 +9,11 @@ use Illuminate\Support\Str;
 
 class packetController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('role:owner')->except(['index']);
+    }
     public function index(){
         $packets = Packet::orderBy('created_at', 'desc')->get();
         return view('admin.packet.index', compact('packets'));
@@ -76,7 +81,7 @@ class packetController extends Controller
         $packet->price = $request->input('price');
     
         $packet->save();
-        return redirect()->route('packet.index')->with('success', 'Paket berhasil ditambahkan');
+        return redirect()->route('packet.index')->with('success', 'Paket berhasil diperbaruhi');
     }
     public function delete($cd_packets){
         $packet=Packet::find($cd_packets);

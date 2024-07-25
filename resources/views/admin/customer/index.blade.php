@@ -3,8 +3,23 @@
 @section('layouts')
 
 <div class="container-fluid">
-    <h3 class="h3 mb-3 text-gray-800">Table Customers</h3>
-    <p class="mb-4">DataTables Customers Alisha Laundry</p>
+
+ <!-- Alert Messages -->
+ @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @elseif (session('warning'))
+        <div class="alert alert-warning">
+            {{ session('warning') }}
+        </div>
+    @elseif (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+    <h3 class="h3 mb-3 text-gray-800">Table Pelanggan</h3>
+    <p class="mb-4">DataTables Pelanggan Alisha Laundry</p>
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -21,7 +36,7 @@
                     <thead>
                         <tr>
                             <th class="text-center">No</th>
-                            <th class="text-center">Kd_Customers</th>
+                            <th class="text-center">Kode Pelanggan</th>
                             <th class="text-center">Nama</th>
                             <th class="text-center">Alamat</th>
                             <th class="text-center">NoTelp</th>

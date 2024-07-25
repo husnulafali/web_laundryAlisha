@@ -7,18 +7,24 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Customer;
 use App\Models\Packet;
+use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class orderController extends Controller
 {
 
-    public function __construct()
+   public function __construct()
     {
+        if (!Session::has('deviceToken')) {
+            app(waController::class)->getDevices();
+        }
         $this->middleware('role:pegawai')->except(['index']);
     }
+
     public function index(){
         $order['orders'] = Order::with(['customers', 'packets'])->orderBy('created_at', 'desc')->get();
             return view('admin.order.index', $order);
@@ -42,7 +48,7 @@ class orderController extends Controller
         'total_payment' => 'required',
         'payment_date' => 'nullable|date_format:d/m/Y H:i', 
         'payment_status' => 'required|in:Belum Lunas,Lunas',
-        'laundry_status' => 'nullable|in:Baru,Dalam Pengerjaan,Laundry Selesai,di Antar',
+        'laundry_status' => 'nullable|in:Baru,Pengerjaan,Selesai,di Antar',
         'note' => 'nullable'
     ];
 
@@ -79,6 +85,7 @@ class orderController extends Controller
     $order->payment_status = $request->payment_status;
     $order->laundry_status = $request->input('laundry_status', 'Baru');
     $order->note = $request->note;
+   
 
     $packet = Packet::find($request->cd_packets);
     if ($packet) {
@@ -95,7 +102,9 @@ class orderController extends Controller
 
     $order->save();
 
-    return redirect()->route('order.index')->with('success', 'Order berhasil ditambahkan.');
+ 
+
+    return redirect()->route('order.index')->with('success', 'Order berhasil ditambahkan');
 }
 
 
@@ -119,7 +128,7 @@ class orderController extends Controller
                 'total_payment' => 'required',
                 'payment_date' =>'nullable|date_format:d/m/Y H:i', 
                 'payment_status' => 'required|in:Belum Lunas,Lunas',
-                'laundry_status' => 'nullable|in:Baru,Dalam Pengerjaan,Laundry Selesai,di Antar',
+                'laundry_status' => 'nullable|in:Baru,Pengerjaan,Selesai,di Antar',
                 'note' => 'nullable'
             ];
     
@@ -173,54 +182,112 @@ class orderController extends Controller
     
             $order->save();
     
-            return redirect()->route('order.index')->with('success', 'Order berhasil diperbarui.');
+            return redirect()->route('order.index')->with('success', 'Order berhasil diperbarui');
         }
 
-        public function updateLaundryStatus(Request $request, $cd_orders) {
-            $order = Order::findOrFail($cd_orders);
-            $request->validate([
-                'status' => 'required|in:Baru,Dalam Pengerjaan,Laundry Selesai,di Antar',
-            ]);
-            $order->laundry_status = $request->status;
-            $order->save();
-    
-            if ($order->laundry_status === 'Laundry Selesai') {
-                $customer = $order->customers;
-                $phoneNumber = $customer->phone_number;
-                $customerName = $customer->customer_name;
-                $message = "Halo *$customerName*,\n" .
-                "Laundry Anda dengan kode order *$order->cd_orders* telah *selesai*.\n";
-               
-
-                $deviceToken = Session::get('deviceToken');
-                if ($deviceToken) {
-                    $curl = curl_init();
-    
-                    curl_setopt_array($curl, [
-                        CURLOPT_URL => 'https://api.fonnte.com/send',
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_ENCODING => '',
-                        CURLOPT_MAXREDIRS => 10,
-                        CURLOPT_TIMEOUT => 0,
-                        CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => [
-                            'target' => $phoneNumber,
-                            'message' => $message
-                        ],
-                        CURLOPT_HTTPHEADER => [
-                            'Authorization: ' . $deviceToken
-                        ],
-                    ]);
-    
-                    $response = curl_exec($curl);
-                    curl_close($curl);
-                }
+        public function print($cdOrders)
+        {
+            $order = Order::where('cd_orders', $cdOrders)->first();
+            $userId = session('user_id'); 
+        
+            if (!$order) {
+                return abort(404);
             }
+        
+            $user = User::find($userId);
+            return view('admin.order.print', compact('order', 'user'));
+        }
+
+        public function handleMessageStatusUpdate(Request $request){
+            $messageId = $request->input('id');
+            $status = $request->input('message_status');
     
-            return back()->with('success', 'Status laundry berhasil diperbarui.');
+            $order = Order::where('message_id', $messageId)->first();
+            if ($order) {
+            $order->message_status = $status;
+            $order->save();
+        }
+        return response()->json(['status' => 'success']);
+    }
+    
+             public function editMessage(){
+        return view('admin.order.editMessage');
+    }
+    
+    public function updateMessage(Request $request)
+    {
+        $request->validate([
+            'custom_message' => 'nullable|string',
+        ]);
+    
+        $userId = Auth::id();
+    
+        cache()->put("user_{$userId}_custom_message", $request->custom_message);
+        session()->put('custom_message', $request->custom_message);
+    
+        return redirect()->route('order.index')->with('success', 'Pesan berhasil diperbarui');
+    }
+    
+    
+       public function updateLaundryStatus(Request $request, $cd_orders){
+        $order = Order::findOrFail($cd_orders);
+    
+        $request->validate([
+            'status' => 'required|in:Baru,Pengerjaan,Selesai,di Antar',
+        ]);
+    
+        $order->laundry_status = $request->status;
+        $order->save();
+    
+        if ($order->laundry_status === 'Selesai') {
+            $customer = $order->customers;
+            $phoneNumber = $customer->phone_number;
+            $customerName = $customer->customer_name;
+            $defaultMessage = "Halo *{customerName}*,\nLaundry Anda dengan kode order *{orderCode}* telah *{status}*.\n";
+            $customMessage = cache()->get("user_" . Auth::id() . "_custom_message");
+            $message = str_replace(['{customerName}', '{orderCode}', '{status}'], [$customerName, $order->cd_orders, $order->laundry_status], $customMessage ?: $defaultMessage);
+    
+            $deviceToken = session('deviceToken');
+            if ($deviceToken) {
+                $curl = curl_init();
+                curl_setopt_array($curl, [
+                    CURLOPT_URL => 'https://api.fonnte.com/send',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => [
+                        'target' => $phoneNumber,
+                        'message' => $message
+                    ],
+                    CURLOPT_HTTPHEADER => [
+                        'Authorization: ' . $deviceToken
+                    ],
+                ]);
+                $response = curl_exec($curl);
+                $responseData = json_decode($response, true);
+                curl_close($curl);
+    
+                if (isset($responseData['id'])) {
+                    $messageId = $responseData['id'];  
+                    $order->message_id = $messageId;
+                    $order->save();
+    
+                    return back()->with('success', 'Pesan berhasil dikirim ');
+                } else {
+                    return back()->with('error', 'Gagal mengirim pesan coba periksa tautan Wa');
+                }
+                } else {
+                return back()->with('error', 'Gagal mengirim pesan, device tidak ditemukan');
+            
+            }
         }
     
+        return back()->with('success', 'Status laundry berhasil diperbarui');
+       }
+    }
        
-}
+     

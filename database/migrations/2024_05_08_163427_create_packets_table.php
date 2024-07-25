@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('packet_name');
             $table->string('description')->nullable();
             $table->string('processing_time');
-            $table->float('price');
+            $table->decimal('price', 15, 2);
             $table->timestamps();
         });
     }

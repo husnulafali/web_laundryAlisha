@@ -3,6 +3,22 @@
 
 
 <div class="container-fluid">
+    
+     <!-- Alert Messages -->
+ @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @elseif (session('warning'))
+        <div class="alert alert-warning">
+            {{ session('warning') }}
+        </div>
+    @elseif (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
 <h3 class="h3 mb-3 text-gray-800">Table Data Pengguna</h3>
 <p class="mb-4">Data Pengguna Alisha Laundry</p>
 
@@ -17,6 +33,7 @@
                 <thead>
                     <tr>          
                         <th class="text-center">No</th>
+                        <th class="text-center">Nama</th>
                         <th class="text-center">Username</th>
                         <th class="text-center">Email</th>
                         <th class="text-center">Role</th>
@@ -27,6 +44,7 @@
                 @foreach($users as $data)
                     <tr>
                     <td class="text-center">{{ $loop->iteration }}</td>
+                    <td class="text-center">{{ $data->name }}</td>
                         <td class="text-center">{{ $data->username }}</td>
                         <td class="text-center">{{$data->email}}</td>
                         <td class="text-center">{{$data->role}}</td>

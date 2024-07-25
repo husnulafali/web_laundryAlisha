@@ -9,46 +9,46 @@ use Illuminate\Support\Facades\Session;
 
 
 class waController extends Controller{
-    public function getDevices()
-    {
+    public function getDevices() {
         $authToken = env('FONNTE_AUTH_TOKEN');
         $error = null;
         $success = null;
         $qrCodes = [];
         $deviceName = null;
         $decodedDevicesResponse = [];
+
         $devicesResponse = Http::withHeaders([
             'Authorization' => $authToken,
         ])->post('https://api.fonnte.com/get-devices');
-    
+
         $decodedDevicesResponse = $devicesResponse->json();
-    
+
         if (!$devicesResponse->successful()) {
             $error = "Failed to get devices: " . $devicesResponse->status();
-        } elseif (!isset($decodedDevicesResponse['data']) || empty($decodedDevicesResponse['data'])) {
-            $error = "No devices found";
+        } elseif (empty($decodedDevicesResponse['data'])) {
+            $error = "Device Kosong";
         } else {
             foreach ($decodedDevicesResponse['data'] as &$device) {
                 $deviceToken = $device['token'];
                 $qr = $this->getQrCode($deviceToken);
-    
+
                 if ($qr) {
                     $qrCodes[$device['name']] = $qr;
                     $success = "QR code berhasil dipindai!";
                 } else {
                     $error = "Failed to get QR code for one or more devices";
                 }
+
                 $device['disconnect_url'] = route('devices.disconnect', ['deviceToken' => $deviceToken]);
                 $device['show_disconnect'] = $device['status'] === 'connect';
                 Session::put('deviceToken', $deviceToken);
             }
         }
-    
-        return view('admin.wa.index', compact('decodedDevicesResponse', 'qrCodes', 'deviceName', 'error', 'success'));
+
+        return view('admin.wa.index', compact('decodedDevicesResponse', 'qrCodes', 'deviceName'))->with('success', $success)->with('error', $error);
     }
-    
-    public function getQrCode($deviceToken)
-    {
+
+    public function getQrCode($deviceToken) {
         $qrResponse = Http::withHeaders([
             'Authorization' => $deviceToken,
         ])->post('https://api.fonnte.com/qr');
@@ -61,10 +61,9 @@ class waController extends Controller{
         return null;
     }
 
-    public function disconnectDevice($deviceToken)
-    {
+    public function disconnectDevice($deviceToken) {
         $response = Http::withHeaders([
-            'Authorization' => $deviceToken, 
+            'Authorization' => $deviceToken,
         ])->post('https://api.fonnte.com/disconnect', [
             'device_token' => $deviceToken,
         ]);
@@ -76,14 +75,5 @@ class waController extends Controller{
         }
 
         return redirect()->back()->with('message', $message);
-        
     }
-    
 }
-    
-
-  
-
-    
-    
-

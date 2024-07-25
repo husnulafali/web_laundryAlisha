@@ -15,11 +15,13 @@ return new class extends Migration
             $table->datetime('order_date');
             $table->float('weight', 8, 2);
             $table->float('discount', 8, 2)->nullable();
-            $table->float('total_payment', 8, 2);
+            $table->decimal('total_payment', 15, 2);
             $table->datetime('payment_date')->nullable(); 
             $table->enum('payment_status', ['Belum Lunas', 'Lunas']);
-            $table->enum('laundry_status', ['Baru','Dalam Pengerjaan','Laundry Selesai','di Antar',])->nullable();
+            $table->enum('laundry_status', ['Baru','Pengerjaan','Selesai','di Antar',])->nullable();
             $table->string('note')->nullable();
+            $table->text('custom_message')->nullable(); 
+            $table->string('message_id')->nullable();
             $table->foreign('cd_customers')->references('cd_customers')->on('customers')->onDelete('cascade');
             $table->foreign('cd_packets')->references('cd_packets')->on('packets')->onDelete('cascade');
             $table->timestamps();
