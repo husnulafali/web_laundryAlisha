@@ -61,11 +61,6 @@
             <h1>Alisha Laundry</h1>
             <h2>Laporan Order</h2>
             <p style="font-size:20px;">Dari tanggal {{ \Carbon\Carbon::parse($start_date)->format('d F Y') }} sampai {{ \Carbon\Carbon::parse($end_date)->format('d F Y') }}</p>
-            @if(isset($start_date) && isset($end_date))
-                            <a href="{{ route('report.download', ['start_date' => $start_date, 'end_date' => $end_date])}}" class="print-button" style="padding: 5px 20px; background-color: #008CBA; color: #fff; text-decoration: none; cursor: pointer; margin-right: 10px;">
-                                Download
-                            </a>
-                        @endif
              <a href="javascript:window.print();" class="print-button print-only" style="padding: 5px 20px; background-color: #4CAF50; color: #fff; text-decoration: none; cursor: pointer;">
               Cetak
               </a>

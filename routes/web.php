@@ -5,14 +5,12 @@ use App\Http\Controllers\Backend\userController;
 use App\Http\Controllers\Backend\dashboardController;
 use App\Http\Controllers\Backend\customerController;
 use App\Http\Controllers\Backend\packetController;
-use App\Http\Controllers\Backend\promoController;
 use App\Http\Controllers\Backend\orderController;
 use App\Http\Controllers\Backend\waController;
 use App\Http\Controllers\Backend\reportController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Middleware\CheckRole;
 
-use App\Http\Controllers\frontend\homeController;
 
 
 
@@ -64,7 +62,6 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
     Route::prefix('report')->group(function () {
         Route::get('/view/owner', [reportController::class, 'index'])->name('report.index');
         Route::get('/show', [reportController::class, 'show'])->name('report.show');
-        Route::get('/download', [reportController::class, 'download'])->name('report.download');
   
     });
 

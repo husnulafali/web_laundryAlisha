@@ -32,18 +32,6 @@ class reportController extends Controller {
            return view('admin.report.show', compact('report', 'start_date', 'end_date'));
        }
        
-    public function download(Request $request)
-    {
-        $start_date = $request->input('start_date');
-        $end_date = $request->input('end_date');
     
-        $report = Order::whereBetween('order_date', [$start_date, $end_date])->get();
-    
-        $pdf = PDF::loadView('admin.report.show', compact('report', 'start_date', 'end_date'))->setPaper('A4', 'landscape');
-    
-        $filename = 'laporanOrder_' . \Carbon\Carbon::parse($start_date)->format('Y-m-d') . '_' . \Carbon\Carbon::parse($end_date)->format('Y-m-d') . '.pdf';
-    
-        return $pdf->download($filename);
-    }
     
 }

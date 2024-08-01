@@ -37,6 +37,7 @@
                                     <span style="margin-right:100px;"><strong>Nama:</strong> {{ $device['name'] }}</span>
                                     <span style="margin-right:100px;"><strong>WA:</strong> {{ $device['device'] }}</span>
                                     <strong>Status:</strong><span style="margin-right: 100px; color: {{ $device['status'] === 'connect' ? 'green' : 'red' }}">{{ $device['status'] }}</span>
+                                    <span style="margin-right:100px;"><strong>TOKEN:</strong> {{ $device['token'] }}</span>
                                 </li>
                             @endforeach
                         </ul>
