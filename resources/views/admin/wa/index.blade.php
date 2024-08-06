@@ -37,7 +37,6 @@
                                     <span style="margin-right:100px;"><strong>Nama:</strong> {{ $device['name'] }}</span>
                                     <span style="margin-right:100px;"><strong>WA:</strong> {{ $device['device'] }}</span>
                                     <strong>Status:</strong><span style="margin-right: 100px; color: {{ $device['status'] === 'connect' ? 'green' : 'red' }}">{{ $device['status'] }}</span>
-                                    <span style="margin-right:100px;"><strong>TOKEN:</strong> {{ $device['token'] }}</span>
                                 </li>
                             @endforeach
                         </ul>
@@ -51,32 +50,23 @@
                     <h6 class="m-0 font-weight-bold text-primary">QR CODES</h6>
                 </div>
                 <div class="card-body">
-                    @if (!empty($qrCodes) && count($qrCodes) > 0)
-                        <ul style="text-align: center;"> 
-                            @foreach ($qrCodes as $deviceName => $qr)
-                                <li style="display: inline-block; margin-bottom: 20px;">
-                                    <div style="font-weight: bold;">*{{ $deviceName }}</div>
-                                    <img src="data:image/png;base64,{{ $qr }}" alt="QR Code">
-                                </li>
-                            @endforeach
-                        </ul>
-                    @endif
-                    <div style="text-align: center;">
-                        @if (!empty($decodedDevicesResponse['data']))
-                            @foreach ($decodedDevicesResponse['data'] as $device)
-                                @if (!empty($device['show_disconnect']))
-                                    <form action="{{ $device['disconnect_url'] }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-danger">{{ $device['name'] }} Disconnect</button>
-                                    </form>
-                                @endif
-                            @endforeach
-                        @else
-                        <div class="alert alert-danger">
-                            Qr kode tidak ditemukan
-                        </div>
+                    @if (auth()->user()->hasRole('owner'))
+                        @if (!empty($qrCodes) && count($qrCodes) > 0)
+                            <ul style="text-align: center;"> 
+                                @foreach ($qrCodes as $deviceName => $qr)
+                                    <li style="display: inline-block; margin-bottom: 20px;">
+                                        <div style="font-weight: bold;">*{{ $deviceName }}</div>
+                                        <img src="data:image/png;base64,{{ $qr }}" alt="QR Code">
+                                    </li>
+                                @endforeach
+                            </ul>
+                       
                         @endif
-                    </div>
+                    @else
+                        <div class="alert alert-info">
+                          Akses Owner
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

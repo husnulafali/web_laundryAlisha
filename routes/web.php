@@ -65,6 +65,12 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
   
     });
 
+    Route::prefix('wa')->group(function () {
+        Route::get('/devices/owner', [waController::class, 'getDevices'])->name('devices.owner.index');
+        Route::get('/qr-code/{deviceToken}', [waController::class, 'getQrCode'])->name('qr-code');
+        // Route::post('/disconnect/{deviceToken}', [waController::class, 'disconnectDevice'])->name('devices.disconnect');
+    });
+
 });
 
 
@@ -99,9 +105,7 @@ Route::middleware(['auth', 'role:pegawai'])->group(function () {
 
         
     Route::prefix('wa')->group(function () {
-        Route::get('/devices', [waController::class, 'getDevices'])->name('devices.index');
-        Route::get('/qr-code/{deviceToken}', [waController::class, 'getQrCode'])->name('qr-code');
-        Route::post('/disconnect/{deviceToken}', [waController::class, 'disconnectDevice'])->name('devices.disconnect');
+        Route::get('/devices/pegawai', [waController::class, 'getDevices'])->name('devices.pegawai.index');
     });
 
 });

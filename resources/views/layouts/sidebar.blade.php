@@ -59,6 +59,13 @@
         </a>
     </li>
 
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('devices.owner.index') }}">
+            <i class="fas fa-fw fa-check"></i>
+            <span>Tautan WA</span>
+        </a>
+    </li>
+
   
   
     @elseif (Auth::user()->role == 'pegawai')
@@ -87,7 +94,7 @@
         <hr class="sidebar-divider d-none d-md-block">
 
     <li class="nav-item">
-        <a class="nav-link" href="{{ route('devices.index') }}">
+        <a class="nav-link" href="{{ route('devices.pegawai.index') }}">
             <i class="fas fa-fw fa-check"></i>
             <span>Tautan WA</span>
         </a>
